@@ -7,14 +7,15 @@
 import re
 import pytest
 from sphinx.application import Sphinx
-from sphinx.testing.path import path
 
 
 def get_content(app: Sphinx) -> str:
     app.builder.build_all()
 
     index = app.outdir / "index.html"
-    return index.read_text() if "read_text" in path.__dict__ else index.text()
+    if hasattr(index, "read_text"):
+        return index.read_text(encoding="utf-8")
+    return index.text()
 
 
 @pytest.mark.sphinx(
@@ -45,5 +46,8 @@ def test_kroki_html(app, status, warning):
     )
     assert re.search(html, content, re.S)
 
-    html = r'<img.*?class="kroki kroki-ditaa align-right".*?/>'
+    html = (
+        r'<img[^>]*class="(?=[^"]*\bkroki\b)'
+        r'(?=[^"]*\bkroki-ditaa\b)(?=[^"]*\balign-right\b)[^"]*"[^>]*/>'
+    )
     assert re.search(html, content, re.S)
