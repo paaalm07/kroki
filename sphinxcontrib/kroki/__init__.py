@@ -10,9 +10,15 @@ from typing import Any, Dict
 from sphinx.application import Sphinx
 from .kroki import Kroki
 from .transform import KrokiToImageTransform
-import pkg_resources
 
-__version__ = pkg_resources.get_distribution("sphinxcontrib-kroki").version
+# Python >=3.8 provides importlib.metadata in stdlib.
+# Keep a backport fallback for supported Python 3.6/3.7.
+try:
+    from importlib.metadata import version as _dist_version
+except ImportError:  # pragma: no cover
+    from importlib_metadata import version as _dist_version  # type: ignore
+
+__version__ = _dist_version("sphinxcontrib-kroki")
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:

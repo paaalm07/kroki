@@ -23,7 +23,8 @@ setup(
     install_requires=[
         "sphinx",
         "requests>=2.4.2",
-        "pyyaml"
+        "pyyaml",
+        "importlib_metadata; python_version < '3.8'",
     ],
     extras_require={
         "code": ["black", "flake8", "mypy"],
